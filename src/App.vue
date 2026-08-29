@@ -25,10 +25,75 @@
 
             <div class="tool-item">
               <label>意境:</label>
-              <select v-model="currentPalette" @change="updateTheme" class="appearance-select palette-select">
+              <select v-model="currentPalette" @change="handlePaletteSelect" class="appearance-select palette-select">
                 <option v-for="(palette, key) in themePalettes" :key="key" :value="key">{{ palette.label }}</option>
+                <option value="custom">自定义</option>
               </select>
-              <span class="palette-dot" :style="{ background: activePalette.primary }" aria-hidden="true"></span>
+              <span class="palette-dot" :style="{ background: renderedPalette.primary }" aria-hidden="true"></span>
+            </div>
+            <button class="theme-edit-button" :class="{ active: showThemePanel }" type="button" @click="showThemePanel = !showThemePanel">
+              调色
+            </button>
+
+            <div v-if="showThemePanel" class="theme-panel" @click.stop>
+              <div class="theme-panel-heading">
+                <div>
+                  <strong>界面配色</strong>
+                  <span>整套联动，不会只改一处</span>
+                </div>
+                <button type="button" aria-label="关闭配色面板" @click="showThemePanel = false">×</button>
+              </div>
+
+              <div class="theme-presets" aria-label="预设主题">
+                <button
+                  v-for="(palette, key) in themePalettes"
+                  :key="key"
+                  type="button"
+                  :class="['theme-preset', { active: currentPalette === key }]"
+                  @click="selectPalette(key)"
+                >
+                  <span class="preset-swatches" aria-hidden="true">
+                    <i :style="{ background: palette.canvas }"></i>
+                    <i :style="{ background: palette.paper }"></i>
+                    <i :style="{ background: palette.primary }"></i>
+                    <i :style="{ background: palette.danger }"></i>
+                  </span>
+                  <span>{{ palette.label }}</span>
+                </button>
+              </div>
+
+              <div class="custom-theme-section">
+                <div class="custom-theme-title">
+                  <strong>自定义</strong>
+                  <button type="button" @click="startCustomFromActive">以当前方案微调</button>
+                </div>
+                <div class="color-field-row">
+                  <label>
+                    <span>骨架主色</span>
+                    <input v-model="customTheme.primary" type="color" @input="applyCustomTheme">
+                    <code>{{ customTheme.primary.toUpperCase() }}</code>
+                  </label>
+                  <label>
+                    <span>纸面底色</span>
+                    <input v-model="customTheme.paper" type="color" @input="applyCustomTheme">
+                    <code>{{ customTheme.paper.toUpperCase() }}</code>
+                  </label>
+                </div>
+              </div>
+
+              <div class="brightness-control">
+                <div class="brightness-label">
+                  <span>整体明度</span>
+                  <strong>{{ brightnessLabel }}</strong>
+                </div>
+                <input v-model.number="themeBrightness" type="range" min="-10" max="10" step="1" @input="updateTheme">
+                <div class="brightness-scale"><span>沉静</span><span>标准</span><span>明朗</span></div>
+              </div>
+
+              <div class="theme-panel-footer">
+                <span>文字和边框会自动保持清晰</span>
+                <button type="button" @click="resetThemeAdjustments">恢复默认</button>
+              </div>
             </div>
         </div>
         
@@ -82,7 +147,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref, onMounted, watch } from 'vue'
+import { computed, reactive, ref, onMounted, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useGuaLiStore } from './stores/guaLiStore'
 import GuaLiList from './components/GuaLiList.vue'
@@ -139,6 +204,12 @@ const themePalettes: Record<string, ThemePalette> = {
     border: '#CDB994', borderSoft: '#E0D0B2', ink: '#26231E', secondary: '#5F584C',
     muted: '#8B806D', danger: '#A6483F', success: '#536F57', gold: '#9B7435', shadow: 'rgba(42,34,22,0.16)'
   },
+  shuimo: {
+    label: '水墨', primary: '#2C2C29', primaryHover: '#1C1C1A', primarySoft: '#E5E3DB',
+    canvas: '#D8D7D0', paper: '#F0EFE8', paperStrong: '#FCFBF5', surface: '#E5E3DC',
+    border: '#C9C6BB', borderSoft: '#DFDDD4', ink: '#272722', secondary: '#5D5C54',
+    muted: '#89877D', danger: '#A34840', success: '#55705B', gold: '#92723F', shadow: 'rgba(37,37,33,0.14)'
+  },
   qingci: {
     label: '青瓷', primary: '#416C68', primaryHover: '#345A57', primarySoft: '#E2ECE9',
     canvas: '#DDE5DF', paper: '#F3F5EE', paperStrong: '#FBFCF7', surface: '#E8EEE8',
@@ -151,6 +222,12 @@ const themePalettes: Record<string, ThemePalette> = {
     border: '#CCD2D4', borderSoft: '#E0E4E4', ink: '#293438', secondary: '#58666B',
     muted: '#899398', danger: '#A2524B', success: '#557565', gold: '#9A825B', shadow: 'rgba(38,50,57,0.12)'
   },
+  zheshi: {
+    label: '赭石', primary: '#74402F', primaryHover: '#5B3024', primarySoft: '#EEE1D8',
+    canvas: '#DDD0C4', paper: '#F3E7DA', paperStrong: '#FFF8F0', surface: '#E9DACE',
+    border: '#CBB5A5', borderSoft: '#E2D2C6', ink: '#352B26', secondary: '#665750',
+    muted: '#94847A', danger: '#A4433C', success: '#5D725A', gold: '#9C773F', shadow: 'rgba(63,42,33,0.14)'
+  },
   mushan: {
     label: '暮山', primary: '#5B5366', primaryHover: '#494252', primarySoft: '#ECE7EE',
     canvas: '#E5DFE2', paper: '#F7F2EE', paperStrong: '#FEFAF6', surface: '#EEE7E5',
@@ -161,10 +238,114 @@ const themePalettes: Record<string, ThemePalette> = {
 
 const currentPalette = ref('xuanzhi')
 const currentFont = ref("'Songti SC', 'STSong', 'SimSun', serif")
-const activePalette = computed(() => themePalettes[currentPalette.value] || themePalettes.xuanzhi)
+const showThemePanel = ref(false)
+const themeBrightness = ref(0)
+const customTheme = reactive({ primary: '#292824', paper: '#F1E2C4' })
+
+const clamp = (value: number, min: number, max: number) => Math.min(max, Math.max(min, value))
+const normalizeHex = (hex: string) => /^#[0-9a-f]{6}$/i.test(hex) ? hex : '#808080'
+const hexToRgb = (hex: string) => {
+  const value = normalizeHex(hex).slice(1)
+  return {
+    r: parseInt(value.slice(0, 2), 16),
+    g: parseInt(value.slice(2, 4), 16),
+    b: parseInt(value.slice(4, 6), 16)
+  }
+}
+const rgbToHex = (r: number, g: number, b: number) => `#${[r, g, b].map(value => Math.round(clamp(value, 0, 255)).toString(16).padStart(2, '0')).join('')}`.toUpperCase()
+const mixColor = (from: string, to: string, weight: number) => {
+  const a = hexToRgb(from)
+  const b = hexToRgb(to)
+  const ratio = clamp(weight, 0, 1)
+  return rgbToHex(a.r + (b.r - a.r) * ratio, a.g + (b.g - a.g) * ratio, a.b + (b.b - a.b) * ratio)
+}
+const hexToHsl = (hex: string) => {
+  const { r, g, b } = hexToRgb(hex)
+  const red = r / 255
+  const green = g / 255
+  const blue = b / 255
+  const max = Math.max(red, green, blue)
+  const min = Math.min(red, green, blue)
+  const delta = max - min
+  let hue = 0
+  if (delta) {
+    if (max === red) hue = 60 * (((green - blue) / delta) % 6)
+    else if (max === green) hue = 60 * ((blue - red) / delta + 2)
+    else hue = 60 * ((red - green) / delta + 4)
+  }
+  if (hue < 0) hue += 360
+  const lightness = (max + min) / 2
+  const saturation = delta === 0 ? 0 : delta / (1 - Math.abs(2 * lightness - 1))
+  return { h: hue, s: saturation * 100, l: lightness * 100 }
+}
+const hslToHex = (h: number, s: number, l: number) => {
+  const saturation = clamp(s, 0, 100) / 100
+  const lightness = clamp(l, 0, 100) / 100
+  const chroma = (1 - Math.abs(2 * lightness - 1)) * saturation
+  const sector = ((h % 360) + 360) % 360 / 60
+  const x = chroma * (1 - Math.abs((sector % 2) - 1))
+  const offset = lightness - chroma / 2
+  const channels = sector < 1 ? [chroma, x, 0] : sector < 2 ? [x, chroma, 0] : sector < 3 ? [0, chroma, x] : sector < 4 ? [0, x, chroma] : sector < 5 ? [x, 0, chroma] : [chroma, 0, x]
+  return rgbToHex((channels[0] + offset) * 255, (channels[1] + offset) * 255, (channels[2] + offset) * 255)
+}
+const adjustLightness = (hex: string, amount: number) => {
+  const hsl = hexToHsl(hex)
+  return hslToHex(hsl.h, hsl.s, hsl.l + amount)
+}
+const normalizePaperColor = (hex: string) => {
+  const hsl = hexToHsl(hex)
+  return hslToHex(hsl.h, clamp(hsl.s, 5, 38), clamp(hsl.l, 76, 92))
+}
+const normalizePrimaryColor = (hex: string) => {
+  const hsl = hexToHsl(hex)
+  return hslToHex(hsl.h, clamp(hsl.s, 0, 62), clamp(hsl.l, 18, 42))
+}
+const createCustomPalette = (): ThemePalette => {
+  const paper = normalizePaperColor(customTheme.paper)
+  const primary = normalizePrimaryColor(customTheme.primary)
+  const ink = mixColor(primary, '#171714', 0.56)
+  const primaryRgb = hexToRgb(primary)
+  return {
+    label: '自定义',
+    primary,
+    primaryHover: adjustLightness(primary, -7),
+    primarySoft: mixColor(paper, primary, 0.08),
+    canvas: mixColor(paper, primary, 0.15),
+    paper,
+    paperStrong: mixColor(paper, '#FFFFFF', 0.48),
+    surface: mixColor(paper, primary, 0.055),
+    border: mixColor(paper, primary, 0.23),
+    borderSoft: mixColor(paper, primary, 0.115),
+    ink,
+    secondary: mixColor(ink, paper, 0.3),
+    muted: mixColor(ink, paper, 0.54),
+    danger: '#A6483F',
+    success: '#536F57',
+    gold: '#9B7435',
+    shadow: `rgba(${primaryRgb.r},${primaryRgb.g},${primaryRgb.b},0.15)`
+  }
+}
+const activePalette = computed(() => currentPalette.value === 'custom' ? createCustomPalette() : (themePalettes[currentPalette.value] || themePalettes.xuanzhi))
+const renderedPalette = computed<ThemePalette>(() => {
+  const palette = activePalette.value
+  const amount = themeBrightness.value
+  return {
+    ...palette,
+    primarySoft: adjustLightness(palette.primarySoft, amount * 0.7),
+    canvas: adjustLightness(palette.canvas, amount),
+    paper: adjustLightness(palette.paper, amount),
+    paperStrong: adjustLightness(palette.paperStrong, amount),
+    surface: adjustLightness(palette.surface, amount),
+    border: adjustLightness(palette.border, amount * 0.8),
+    borderSoft: adjustLightness(palette.borderSoft, amount * 0.9)
+  }
+})
+const brightnessLabel = computed(() => themeBrightness.value === 0 ? '标准' : `${themeBrightness.value > 0 ? '+' : ''}${themeBrightness.value}`)
 
 const THEME_PALETTE_KEY = 'user-theme-palette'
 const FONT_FAMILY_KEY = 'user-font-family'
+const CUSTOM_THEME_KEY = 'user-custom-theme'
+const THEME_BRIGHTNESS_KEY = 'user-theme-brightness'
 
 watch(searchKeyword, (newVal) => {
   guaLiStore.setSearchKeyword(newVal)
@@ -177,9 +358,40 @@ watch(() => guaLiStore.guaLiList.length, () => {
 
 const goHome = () => { router.push('/') }
 
+const selectPalette = (key: string) => {
+  currentPalette.value = key
+  updateTheme()
+}
+
+const handlePaletteSelect = () => {
+  if (currentPalette.value === 'custom') showThemePanel.value = true
+  updateTheme()
+}
+
+const startCustomFromActive = () => {
+  const palette = activePalette.value
+  customTheme.primary = palette.primary
+  customTheme.paper = palette.paper
+  currentPalette.value = 'custom'
+  updateTheme()
+}
+
+const applyCustomTheme = () => {
+  currentPalette.value = 'custom'
+  updateTheme()
+}
+
+const resetThemeAdjustments = () => {
+  currentPalette.value = 'xuanzhi'
+  themeBrightness.value = 0
+  customTheme.primary = '#292824'
+  customTheme.paper = '#F1E2C4'
+  updateTheme()
+}
+
 const updateTheme = () => {
   const root = document.documentElement
-  const palette = activePalette.value
+  const palette = renderedPalette.value
   root.style.setProperty('--primary-color', palette.primary)
   root.style.setProperty('--primary-hover', palette.primaryHover)
   root.style.setProperty('--primary-soft', palette.primarySoft)
@@ -199,6 +411,8 @@ const updateTheme = () => {
   root.style.setProperty('--custom-font', currentFont.value)
   localStorage.setItem(THEME_PALETTE_KEY, currentPalette.value)
   localStorage.setItem(FONT_FAMILY_KEY, currentFont.value)
+  localStorage.setItem(CUSTOM_THEME_KEY, JSON.stringify(customTheme))
+  localStorage.setItem(THEME_BRIGHTNESS_KEY, String(themeBrightness.value))
 }
 
 onMounted(() => {
@@ -207,7 +421,21 @@ onMounted(() => {
   todayCount.value = guaLiStore.todayCount
   
   const savedPalette = localStorage.getItem(THEME_PALETTE_KEY)
-  if (savedPalette && themePalettes[savedPalette]) currentPalette.value = savedPalette
+  if (savedPalette && (themePalettes[savedPalette] || savedPalette === 'custom')) currentPalette.value = savedPalette
+
+  const savedCustomTheme = localStorage.getItem(CUSTOM_THEME_KEY)
+  if (savedCustomTheme) {
+    try {
+      const parsed = JSON.parse(savedCustomTheme)
+      if (typeof parsed.primary === 'string') customTheme.primary = parsed.primary
+      if (typeof parsed.paper === 'string') customTheme.paper = parsed.paper
+    } catch {
+      localStorage.removeItem(CUSTOM_THEME_KEY)
+    }
+  }
+
+  const savedBrightness = Number(localStorage.getItem(THEME_BRIGHTNESS_KEY))
+  if (Number.isFinite(savedBrightness)) themeBrightness.value = clamp(savedBrightness, -10, 10)
   
   const savedFont = localStorage.getItem(FONT_FAMILY_KEY)
   if (savedFont) currentFont.value = savedFont
@@ -363,6 +591,8 @@ body {
 }
 
 .header {
+  position: relative;
+  z-index: 40;
   min-height: 92px;
   padding: 16px 26px;
   color: var(--text-color);
@@ -397,6 +627,7 @@ body {
 .header .subtitle { margin-top: 4px; color: var(--text-muted); font-size: 12px; letter-spacing: 0.28em; }
 .header-right-group { gap: 16px; }
 .appearance-tools {
+  position: relative;
   gap: 13px;
   padding: 7px 11px;
   border: 1px solid var(--border-soft);
@@ -427,6 +658,117 @@ body {
   box-shadow: 0 0 0 2px var(--paper-strong);
   pointer-events: none;
 }
+.theme-edit-button {
+  padding: 4px 8px;
+  border: 1px solid var(--border-color);
+  border-radius: 5px;
+  color: var(--text-secondary);
+  background: var(--paper-strong);
+  font-family: inherit;
+  font-size: 12px;
+  cursor: pointer;
+}
+.theme-edit-button:hover, .theme-edit-button.active { border-color: var(--primary-color); color: var(--primary-color); }
+.theme-panel {
+  position: absolute;
+  top: calc(100% + 11px);
+  right: 0;
+  z-index: 80;
+  width: 380px;
+  padding: 16px;
+  border: 1px solid var(--border-color);
+  border-radius: 10px;
+  color: var(--text-color);
+  background: var(--paper-strong);
+  box-shadow: 0 18px 46px var(--shadow-color);
+}
+.theme-panel::before {
+  position: absolute;
+  top: -6px;
+  right: 28px;
+  width: 10px;
+  height: 10px;
+  border-top: 1px solid var(--border-color);
+  border-left: 1px solid var(--border-color);
+  background: var(--paper-strong);
+  content: '';
+  transform: rotate(45deg);
+}
+.theme-panel-heading, .custom-theme-title, .brightness-label, .theme-panel-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.theme-panel-heading > div { display: flex; flex-direction: column; gap: 3px; }
+.theme-panel-heading strong { font-family: var(--custom-font); font-size: 17px; letter-spacing: 0.08em; }
+.theme-panel-heading span, .theme-panel-footer span { color: var(--text-muted); font-size: 11px; }
+.theme-panel-heading > button {
+  width: 26px;
+  height: 26px;
+  border: 0;
+  border-radius: 50%;
+  color: var(--text-muted);
+  background: var(--surface-muted);
+  font-size: 18px;
+  cursor: pointer;
+}
+.theme-presets {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  margin-top: 14px;
+}
+.theme-preset {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 8px;
+  border: 1px solid var(--border-soft);
+  border-radius: 7px;
+  color: var(--text-secondary);
+  background: transparent;
+  font-family: inherit;
+  font-size: 12px;
+  text-align: left;
+  cursor: pointer;
+}
+.theme-preset:hover { border-color: var(--border-color); background: var(--surface-muted); }
+.theme-preset.active { border-color: var(--primary-color); color: var(--text-color); box-shadow: inset 0 0 0 1px var(--primary-color); }
+.preset-swatches { display: grid; grid-template-columns: 1.4fr 1.2fr 0.8fr 0.55fr; height: 15px; overflow: hidden; border: 1px solid color-mix(in srgb, var(--border-color) 65%, transparent); border-radius: 3px; }
+.preset-swatches i { display: block; }
+.custom-theme-section, .brightness-control {
+  margin-top: 14px;
+  padding-top: 13px;
+  border-top: 1px solid var(--border-soft);
+}
+.custom-theme-title strong, .brightness-label span { color: var(--text-secondary); font-size: 13px; }
+.custom-theme-title button, .theme-panel-footer button {
+  border: 0;
+  color: var(--primary-color);
+  background: transparent;
+  font-family: inherit;
+  font-size: 11px;
+  cursor: pointer;
+}
+.color-field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; margin-top: 10px; }
+.color-field-row label {
+  display: grid;
+  grid-template-columns: 1fr 30px;
+  gap: 3px 8px;
+  align-items: center;
+  padding: 8px 9px;
+  border: 1px solid var(--border-soft);
+  border-radius: 7px;
+  background: var(--surface-muted);
+}
+.color-field-row label > span { color: var(--text-secondary); font-size: 11px; }
+.color-field-row input[type='color'] { grid-row: span 2; width: 30px; height: 30px; padding: 2px; border: 1px solid var(--border-color); border-radius: 6px; background: var(--paper-strong); cursor: pointer; }
+.color-field-row code { color: var(--text-muted); font-family: ui-monospace, SFMono-Regular, Consolas, monospace; font-size: 10px; }
+.brightness-label strong { color: var(--primary-color); font-size: 12px; }
+.brightness-control input[type='range'] { width: 100%; margin: 10px 0 3px; accent-color: var(--primary-color); cursor: pointer; }
+.brightness-scale { display: flex; justify-content: space-between; color: var(--text-muted); font-size: 10px; }
+.theme-panel-footer { margin-top: 13px; padding-top: 11px; border-top: 1px solid var(--border-soft); }
 .stats { gap: 9px; }
 .stat-item {
   min-width: 78px;
