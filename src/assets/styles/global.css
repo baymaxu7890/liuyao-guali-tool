@@ -1,0 +1,31 @@
+/* src/assets/styles/global.css */
+:root {
+  --primary-color: #667eea;
+  --card-bg: #ffffff;
+  --text-color: #333333;
+  /* 默认字体 */
+  --custom-font: "Microsoft YaHei", "Heiti SC", sans-serif; 
+}
+
+/* 滚动条样式 (保持不变) */
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-track { background: #f1f1f1; }
+::-webkit-scrollbar-thumb { background: var(--primary-color); border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { filter: brightness(0.9); }
+
+/* 全局应用变量 */
+.card, .wnl-panel, .panel-container, .modal-card, .guali-item, .explanation-card {
+  background-color: var(--card-bg) !important;
+  color: var(--text-color);
+  transition: background-color 0.3s, color 0.3s;
+}
+
+/* 强制应用自定义字体到所有文本 */
+body, button, input, textarea, select, .main-text, .gua-name-lg, .gc-text, .reason-title {
+  font-family: var(--custom-font) !important;
+}
+
+/* 确保弹窗在最上层 */
+.modal-overlay {
+  z-index: 9999 !important;
+}

@@ -1,0 +1,22 @@
+[Unit]
+Description=Liuyao multi-cloud backup API
+After=network-online.target docker.service
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=liuyao-backup
+Group=liuyao-backup
+WorkingDirectory=/opt/liuyao-backup
+EnvironmentFile=/etc/liuyao-backup/env
+ExecStart=/usr/local/bin/node /opt/liuyao-backup/index.mjs
+Restart=on-failure
+RestartSec=3
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectHome=true
+ProtectSystem=strict
+ReadWritePaths=/var/lib/liuyao-backup
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,21 @@
+FROM node:22-alpine AS build
+
+WORKDIR /app
+COPY package.json package-lock.json ./
+RUN npm ci
+COPY . .
+
+ARG VITE_CLOUD_BACKUP_ENABLED=true
+ARG VITE_CLOUD_BACKUP_ENDPOINT=/api/backup
+ARG VITE_CLOUD_BACKUP_STATUS_ENDPOINT=/api/status
+ENV VITE_CLOUD_BACKUP_ENABLED=$VITE_CLOUD_BACKUP_ENABLED
+ENV VITE_CLOUD_BACKUP_ENDPOINT=$VITE_CLOUD_BACKUP_ENDPOINT
+ENV VITE_CLOUD_BACKUP_STATUS_ENDPOINT=$VITE_CLOUD_BACKUP_STATUS_ENDPOINT
+
+RUN npm run build
+
+FROM nginx:1.27-alpine
+COPY deploy/nginx.conf /etc/nginx/conf.d/default.conf
+COPY --from=build /app/dist /usr/share/nginx/html
+
+EXPOSE 80
