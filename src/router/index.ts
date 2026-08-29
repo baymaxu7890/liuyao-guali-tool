@@ -41,7 +41,7 @@ const router = createRouter({
       meta: {
         module: 'meihua',
         title: '梅花易数',
-        icon: '🌸',
+        icon: '梅',
         description: '预留梅花起卦、互卦变卦、体用生克与案例管理能力。'
       }
     },
@@ -52,7 +52,7 @@ const router = createRouter({
       meta: {
         module: 'bazi',
         title: '八字排盘',
-        icon: '🧾',
+        icon: '八',
         description: '预留四柱、大运流年、十神旺衰与命例管理能力。'
       }
     },
@@ -63,7 +63,7 @@ const router = createRouter({
       meta: {
         module: 'qimen',
         title: '奇门遁甲',
-        icon: '🧭',
+        icon: '门',
         description: '预留阴阳遁、局数、九宫盘、九星八门八神与案例管理能力。'
       }
     }

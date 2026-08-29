@@ -1,6 +1,6 @@
 <template>
   <div class="sidebar-container">
-    <h2 class="sidebar-title">📁 卦例库</h2>
+    <h2 class="sidebar-title"><span class="section-seal" aria-hidden="true">册</span>卦例库</h2>
     
     <!-- 标签筛选区 -->
     <div class="tag-filter">
@@ -51,10 +51,10 @@
     <!-- 底部操作按钮 -->
     <div class="sidebar-actions">
       <button class="btn btn-primary" @click="openImportModal">
-        📁 导入卦例
+        导入卦例
       </button>
       <button class="btn btn-secondary" @click="handleExportAll">
-        📤 导出所有
+        导出所有
       </button>
     </div>
   </div>
@@ -118,18 +118,19 @@ const formatDate = (dateInput: Date | string | number) => {
   display: flex; 
   flex-direction: column; 
   height: 100%; 
-  background-color: #fff; 
-  padding: 16px; 
+  background-color: var(--paper-strong);
+  padding: 18px 16px 14px;
   box-sizing: border-box; 
   overflow: hidden; 
 }
-.sidebar-title { font-size: 18px; font-weight: bold; margin: 0 0 16px 0; color: #333; }
+.sidebar-title { display: flex; align-items: center; gap: 9px; font-family: var(--custom-font); font-size: 18px; font-weight: 700; letter-spacing: 0.08em; margin: 0 0 17px; color: var(--text-color); }
+.section-seal { display: inline-grid; place-items: center; width: 25px; height: 25px; border: 1px solid var(--primary-color); border-radius: 50%; color: var(--primary-color); font-size: 12px; font-weight: 400; }
 
 /* 标签 */
-.tag-filter { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
-.tag-btn { padding: 4px 10px; border-radius: 12px; border: 1px solid #e2e8f0; background: #f7fafc; color: #718096; font-size: 12px; cursor: pointer; transition: all 0.2s; }
-.tag-btn:hover { background: #edf2f7; }
-.tag-btn.active { background: var(--primary-color); color: white; border-color: var(--primary-color); }
+.tag-filter { display: flex; flex-wrap: wrap; gap: 7px; margin-bottom: 17px; }
+.tag-btn { padding: 4px 10px; border-radius: 999px; border: 1px solid var(--border-soft); background: transparent; color: var(--text-secondary); font-size: 11px; cursor: pointer; transition: all 0.2s; }
+.tag-btn:hover { border-color: var(--border-color); color: var(--primary-color); background: var(--primary-soft); }
+.tag-btn.active { background: var(--primary-color); color: var(--paper-strong); border-color: var(--primary-color); }
 
 /* 列表区 */
 .guali-list { 
@@ -141,22 +142,22 @@ const formatDate = (dateInput: Date | string | number) => {
 
 .guali-item { 
   padding: 12px; 
-  border-radius: 8px; 
-  border: 1px solid #edf2f7; 
+  border-radius: 7px;
+  border: 1px solid var(--border-soft);
   margin-bottom: 10px; 
   cursor: pointer; 
   transition: all 0.2s; 
-  background: #fff; 
+  background: var(--paper-strong);
   position: relative; 
   overflow: hidden; 
 }
-.guali-item:hover { border-color: #cbd5e0; transform: translateY(-1px); box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
-.guali-item.active { border-color: var(--primary-color); background-color: #f0f4ff; border-left: 4px solid var(--primary-color); }
+.guali-item:hover { border-color: var(--border-color); transform: translateY(-1px); box-shadow: 0 4px 12px color-mix(in srgb, var(--shadow-color) 55%, transparent); }
+.guali-item.active { border-color: color-mix(in srgb, var(--primary-color) 46%, var(--border-color)); background-color: var(--primary-soft); box-shadow: inset 3px 0 0 var(--primary-color); }
 
 .item-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
-.date { font-size: 12px; color: #a0aec0; }
-.delete-btn { background: none; border: none; color: #cbd5e0; font-size: 16px; cursor: pointer; padding: 0 4px; }
-.delete-btn:hover { color: #e53e3e; }
+.date { font-size: 11px; color: var(--text-muted); }
+.delete-btn { background: none; border: none; color: var(--border-color); font-size: 16px; cursor: pointer; padding: 0 4px; }
+.delete-btn:hover { color: var(--danger-color); }
 
 /* 
   === 修复重点 ===
@@ -164,7 +165,7 @@ const formatDate = (dateInput: Date | string | number) => {
 */
 .reason { 
   font-weight: bold; 
-  color: #2d3748; 
+  color: var(--text-color);
   margin-bottom: 4px; 
   font-size: 14px; 
   
@@ -180,17 +181,17 @@ const formatDate = (dateInput: Date | string | number) => {
   white-space: normal;
 }
 
-.gua-name { font-size: 12px; color: #4a5568; margin-bottom: 6px; }
+.gua-name { font-family: var(--custom-font); font-size: 12px; color: var(--text-secondary); margin-bottom: 6px; }
 
 .tags { display: flex; gap: 4px; flex-wrap: wrap; }
-.tag { background: #edf2f7; color: #718096; font-size: 10px; padding: 2px 6px; border-radius: 4px; }
+.tag { background: var(--surface-muted); color: var(--text-muted); font-size: 10px; padding: 2px 6px; border-radius: 3px; }
 
-.empty-list { text-align: center; color: #a0aec0; padding: 20px 0; font-size: 14px; }
+.empty-list { text-align: center; color: var(--text-muted); padding: 20px 0; font-size: 13px; }
 
-.sidebar-actions { display: flex; flex-direction: column; gap: 10px; padding-top: 10px; border-top: 1px solid #eee; }
-.btn { width: 100%; padding: 10px; border: none; border-radius: 6px; cursor: pointer; font-size: 14px; display: flex; align-items: center; justify-content: center; gap: 8px; transition: background 0.2s; }
-.btn-primary { background-color: var(--primary-color); color: white; }
-.btn-primary:hover { filter: brightness(0.9); }
-.btn-secondary { background-color: #edf2f7; color: #4a5568; }
-.btn-secondary:hover { background-color: #e2e8f0; }
+.sidebar-actions { display: flex; flex-direction: column; gap: 8px; padding-top: 12px; border-top: 1px solid var(--border-soft); }
+.btn { width: 100%; padding: 9px; border: 1px solid transparent; border-radius: 5px; cursor: pointer; font-size: 13px; letter-spacing: 0.06em; display: flex; align-items: center; justify-content: center; gap: 8px; transition: all 0.2s; }
+.btn-primary { background-color: var(--primary-color); color: var(--paper-strong); }
+.btn-primary:hover { background-color: var(--primary-hover); }
+.btn-secondary { border-color: var(--border-soft); background-color: var(--surface-muted); color: var(--text-secondary); }
+.btn-secondary:hover { border-color: var(--border-color); color: var(--primary-color); background-color: var(--paper-strong); }
 </style>

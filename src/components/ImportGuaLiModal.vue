@@ -2,7 +2,7 @@
   <div class="modal-overlay" v-if="visible" @click.self="close">
     <div class="modal-card">
       <div class="modal-header">
-        <h3>📄 导入卦例 / 恢复备份</h3>
+        <h3>导入卦例 / 恢复备份</h3>
         <button class="close-btn" @click="close">×</button>
       </div>
       
@@ -10,7 +10,7 @@
         <div class="input-section">
            <p class="hint">可选择“导出所有”生成的 JSON 备份，也可粘贴包含六爻符号（' " O X）的排盘文本。JSON 恢复采用合并方式，不会删除现有卦例。</p>
            <label class="file-picker">
-             <span>📂 选择 JSON 或文本文件</span>
+             <span>选择 JSON 或文本文件</span>
              <input type="file" accept=".json,.txt,application/json,text/plain" @change="handleFileChange">
            </label>
            <div v-if="fileName" class="file-name">已读取：{{ fileName }}</div>
@@ -23,7 +23,7 @@
 
       <div class="modal-footer">
         <button class="btn btn-secondary" @click="close">取消</button>
-        <button class="btn btn-primary" :disabled="!rawText.trim()" @click="handleDirectImport">✅ 立即导入</button>
+        <button class="btn btn-primary" :disabled="!rawText.trim()" @click="handleDirectImport">立即导入</button>
       </div>
     </div>
   </div>
@@ -119,4 +119,21 @@ const handleDirectImport = () => {
 .btn-secondary { background: #edf2f7; color: #4a5568; } .btn-secondary:hover { background: #e2e8f0; }
 .btn-primary { background: #667eea; color: white; } .btn-primary:hover { background: #5a6fd1; }
 .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+</style>
+
+<style scoped>
+.modal-overlay { background: color-mix(in srgb, var(--text-color) 46%, transparent); backdrop-filter: blur(3px); }
+.modal-card { border: 1px solid var(--border-color); border-radius: 9px; color: var(--text-color); background: var(--card-bg); box-shadow: 0 18px 50px var(--shadow-color); }
+.modal-header, .modal-footer { border-color: var(--border-soft); background: var(--surface-muted); }
+.modal-header h3 { color: var(--text-color); font-family: var(--custom-font); letter-spacing: 0.05em; }
+.close-btn, .hint { color: var(--text-muted); }
+.file-picker { border-color: var(--border-color); color: var(--text-secondary); background: var(--paper-strong); }
+.file-picker:hover { border-color: var(--primary-color); color: var(--primary-color); }
+.file-name { color: var(--success-color); }
+.text-area { border-color: var(--border-color); color: var(--text-color); background: var(--paper-strong); }
+.text-area:focus { border-color: var(--primary-color); box-shadow: 0 0 0 3px var(--primary-soft); }
+.error-msg { border-color: color-mix(in srgb, var(--danger-color) 26%, transparent); color: var(--danger-color); background: color-mix(in srgb, var(--danger-color) 8%, var(--paper-strong)); }
+.btn-secondary { border: 1px solid var(--border-soft); color: var(--text-secondary); background: var(--surface-muted); }
+.btn-primary { color: var(--paper-strong); background: var(--primary-color); }
+.btn-primary:hover { background: var(--primary-hover); }
 </style>

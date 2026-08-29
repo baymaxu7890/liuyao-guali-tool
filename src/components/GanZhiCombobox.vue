@@ -142,3 +142,15 @@ const selectActive = () => {
 .gz-option.selected { color: #4c51bf; font-weight: bold; }
 .empty-option { padding: 10px 8px; color: #a0aec0; font-size: 13px; text-align: center; }
 </style>
+
+<style scoped>
+.gz-label { color: var(--text-secondary); }
+.gz-input { border-color: var(--border-color); color: var(--text-color); background: var(--paper-strong); }
+.gz-input:focus { border-color: var(--primary-color); box-shadow: 0 0 0 3px var(--primary-soft); }
+.gz-input:disabled { color: var(--text-muted); background: var(--surface-muted); }
+.clear-btn, .empty-option { color: var(--text-muted); }
+.gz-dropdown { border-color: var(--border-color); background: var(--paper-strong); box-shadow: 0 10px 24px var(--shadow-color); }
+.gz-option { color: var(--text-color); background: var(--paper-strong); }
+.gz-option:hover, .gz-option.active { background: var(--primary-soft); }
+.gz-option.selected { color: var(--primary-color); }
+</style>

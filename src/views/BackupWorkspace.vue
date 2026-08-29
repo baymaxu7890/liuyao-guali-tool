@@ -3,7 +3,7 @@
     <div class="workspace-heading">
       <div>
         <span class="workspace-kicker">综合排盘 · 数据保护</span>
-        <h2>☁️ 云端与本地备份</h2>
+        <h2><span class="heading-mark" aria-hidden="true">存</span>云端与本地备份</h2>
         <p v-if="desktopState.enabled">桌面版会自动写入 Windows 本地备份目录；云端登录或网络异常不会影响排盘、日历和本地保存。</p>
         <p v-else>云端部署后，归档、更新、删除或导入卦例会自动由服务器同步到坚果云、Yandex Disk 和 Box；浏览器不保存任何云盘凭据。</p>
       </div>
@@ -18,7 +18,7 @@
       <div class="card-title-row">
         <div>
           <span class="card-kicker">桌面版主要备份</span>
-          <h3>🖥️ Windows 本地自动备份</h3>
+          <h3>Windows 本地自动备份</h3>
         </div>
         <span :class="['status-badge', desktopState.lastError ? 'warning' : 'ready']">
           {{ desktopState.isBackingUp ? '正在写入' : (desktopState.lastError ? '备份异常' : '始终开启') }}
@@ -58,7 +58,7 @@
       <div class="card-title-row">
         <div>
           <span class="card-kicker">主要备份</span>
-          <h3>🌐 服务器自动备份到三家云盘</h3>
+          <h3>服务器自动备份到三家云盘</h3>
         </div>
         <span :class="['status-badge', cloudStatusTone]">{{ cloudStatusLabel }}</span>
       </div>
@@ -97,9 +97,9 @@
         <div class="card-title-row">
           <div>
             <span class="card-kicker">可选备用</span>
-            <h3>📁 本地同步文件夹</h3>
+            <h3>本地同步文件夹</h3>
           </div>
-          <span class="folder-icon">{{ state.hasDirectory ? '✅' : '➕' }}</span>
+          <span class="folder-state">{{ state.hasDirectory ? '已关联' : '未关联' }}</span>
         </div>
 
         <div class="folder-display">
@@ -127,7 +127,7 @@
         <div class="card-title-row">
           <div>
             <span class="card-kicker">自动保护</span>
-            <h3>💾 备份状态</h3>
+            <h3>备份状态</h3>
           </div>
           <label class="switch-label">
             <input v-model="autoBackupEnabled" type="checkbox" :disabled="!state.hasDirectory">
@@ -463,4 +463,29 @@ onMounted(() => {
   .action-card { align-items: stretch; flex-direction: column; }
   .action-buttons { justify-content: flex-start; }
 }
+</style>
+
+<style scoped>
+.workspace-page { max-width: 1120px; padding: 26px; }
+.workspace-heading, .backup-card { border-color: var(--border-soft); border-radius: 9px; background: var(--card-bg); box-shadow: 0 6px 18px color-mix(in srgb, var(--shadow-color) 34%, transparent); }
+.workspace-kicker, .card-kicker { color: var(--gold-color); letter-spacing: 0.08em; }
+.workspace-heading h2 { display: flex; align-items: center; gap: 10px; color: var(--text-color); font-family: var(--custom-font); font-size: 24px; }
+.heading-mark { display: inline-grid; place-items: center; width: 28px; height: 28px; border-radius: 50%; color: var(--paper-strong); background: var(--primary-color); font-size: 12px; }
+.workspace-heading p, .action-card p, .cloud-description { color: var(--text-secondary); }
+.backup-card h3 { color: var(--text-color); font-family: var(--custom-font); }
+.desktop-card, .cloud-card { border-color: var(--border-color); background: var(--card-bg); }
+.folder-display { color: var(--text-secondary); background: var(--surface-muted); }
+.folder-display strong { color: var(--text-color); }
+.status-list div { border-color: var(--border-soft); }
+.status-list dt { color: var(--text-muted); }
+.status-list dd { color: var(--text-secondary); }
+.btn.primary { color: var(--paper-strong); background: var(--primary-color); }
+.btn.primary:hover { background: var(--primary-hover); }
+.btn.secondary { border: 1px solid var(--border-soft); color: var(--text-secondary); background: var(--surface-muted); }
+.btn.subtle { color: var(--danger-color); background: color-mix(in srgb, var(--danger-color) 8%, var(--paper-strong)); }
+.notice.info { border-color: var(--border-color); color: var(--primary-color); background: var(--primary-soft); }
+.notice.warning, .status-badge.warning { color: var(--gold-color); background: color-mix(in srgb, var(--gold-color) 10%, var(--paper-strong)); }
+.status-badge.ready { color: var(--success-color); background: color-mix(in srgb, var(--success-color) 10%, var(--paper-strong)); }
+.status-badge.neutral { color: var(--text-muted); background: var(--surface-muted); }
+.folder-state { flex-shrink: 0; padding: 5px 10px; border: 1px solid var(--border-soft); border-radius: 999px; color: var(--text-muted); background: var(--surface-muted); font-size: 12px; }
 </style>

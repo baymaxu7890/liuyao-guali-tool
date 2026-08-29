@@ -21,7 +21,7 @@ import { useRoute } from 'vue-router'
 
 const route = useRoute()
 const moduleTitle = computed(() => String(route.meta.title || '术数模块'))
-const moduleIcon = computed(() => String(route.meta.icon || '🧭'))
+const moduleIcon = computed(() => String(route.meta.icon || '门'))
 const moduleDescription = computed(() => String(route.meta.description || '该模块将在后续版本中接入。'))
 </script>
 
@@ -38,4 +38,15 @@ const moduleDescription = computed(() => String(route.meta.description || '该�
 .reserved-structure strong { margin-bottom: 6px; color: #4a5568; }
 .reserved-structure span { color: #718096; font-size: 13px; line-height: 1.5; }
 @media (max-width: 720px) { .reserved-card { padding: 28px 20px; } .reserved-structure { grid-template-columns: 1fr; } }
+</style>
+
+<style scoped>
+.reserved-card { border-color: var(--border-soft); border-radius: 10px; background: var(--card-bg); box-shadow: 0 12px 32px color-mix(in srgb, var(--shadow-color) 45%, transparent); }
+.module-icon { display: grid; place-items: center; width: 58px; height: 58px; margin: 0 auto 14px; border: 1px solid var(--primary-color); border-radius: 50%; color: var(--primary-color); font-family: var(--custom-font); font-size: 25px; }
+.reserved-badge { color: var(--primary-color); background: var(--primary-soft); }
+.reserved-card h2 { color: var(--text-color); font-family: var(--custom-font); letter-spacing: 0.08em; }
+.reserved-card > p { color: var(--text-secondary); }
+.reserved-structure div { border: 1px solid var(--border-soft); background: var(--surface-muted); }
+.reserved-structure strong { color: var(--text-color); }
+.reserved-structure span { color: var(--text-secondary); }
 </style>

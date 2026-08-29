@@ -1,31 +1,71 @@
-/* src/assets/styles/global.css */
 :root {
-  --primary-color: #667eea;
-  --card-bg: #ffffff;
-  --text-color: #333333;
-  /* 默认字体 */
-  --custom-font: "Microsoft YaHei", "Heiti SC", sans-serif; 
-}
-
-/* 滚动条样式 (保持不变) */
-::-webkit-scrollbar { width: 8px; }
-::-webkit-scrollbar-track { background: #f1f1f1; }
-::-webkit-scrollbar-thumb { background: var(--primary-color); border-radius: 4px; }
-::-webkit-scrollbar-thumb:hover { filter: brightness(0.9); }
-
-/* 全局应用变量 */
-.card, .wnl-panel, .panel-container, .modal-card, .guali-item, .explanation-card {
-  background-color: var(--card-bg) !important;
+  --primary-color: #31564b;
+  --primary-hover: #27483f;
+  --primary-soft: #e5ece6;
+  --canvas-bg: #e7e0d4;
+  --card-bg: #f8f3e8;
+  --paper-strong: #fffcf6;
+  --surface-muted: #f1e9da;
+  --border-color: #d8cdbb;
+  --border-soft: #e7dfd2;
+  --text-color: #29322f;
+  --text-secondary: #56605b;
+  --text-muted: #8b918c;
+  --danger-color: #a84d46;
+  --success-color: #527d62;
+  --gold-color: #a8864b;
+  --shadow-color: rgba(49, 43, 34, 0.12);
+  --ui-font: "Microsoft YaHei", "PingFang SC", "Noto Sans CJK SC", sans-serif;
+  --custom-font: "Songti SC", "STSong", "SimSun", serif;
   color: var(--text-color);
-  transition: background-color 0.3s, color 0.3s;
+  background: var(--canvas-bg);
+  font-family: var(--ui-font);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
-/* 强制应用自定义字体到所有文本 */
-body, button, input, textarea, select, .main-text, .gua-name-lg, .gc-text, .reason-title {
+* { box-sizing: border-box; }
+html, body, #app { width: 100%; min-width: 320px; min-height: 100%; }
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  color: var(--text-color);
+  background:
+    radial-gradient(circle at 12% 10%, color-mix(in srgb, var(--paper-strong) 56%, transparent) 0, transparent 28%),
+    radial-gradient(circle at 88% 92%, color-mix(in srgb, var(--primary-color) 9%, transparent) 0, transparent 34%),
+    var(--canvas-bg);
+  font-family: var(--ui-font);
+  overflow: hidden;
+  transition: background-color 0.35s ease, color 0.25s ease;
+}
+
+button, input, textarea, select { font: inherit; }
+button, a, input, textarea, select { -webkit-tap-highlight-color: transparent; }
+button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--primary-color) 72%, white);
+  outline-offset: 2px;
+}
+
+::selection { color: var(--paper-strong); background: var(--primary-color); }
+::-webkit-scrollbar { width: 7px; height: 7px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: color-mix(in srgb, var(--primary-color) 38%, var(--border-color)); border-radius: 999px; }
+::-webkit-scrollbar-thumb:hover { background: var(--primary-color); }
+
+.card, .wnl-panel, .panel-container, .modal-card, .guali-item, .explanation-card {
+  color: var(--text-color);
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+.main-text, .gua-name-lg, .gc-text, .reason-title, .bazi {
   font-family: var(--custom-font) !important;
 }
 
-/* 确保弹窗在最上层 */
-.modal-overlay {
-  z-index: 9999 !important;
+.modal-overlay { z-index: 9999 !important; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { scroll-behavior: auto !important; transition-duration: 0.01ms !important; animation-duration: 0.01ms !important; }
 }

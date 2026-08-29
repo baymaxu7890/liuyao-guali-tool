@@ -1,7 +1,7 @@
 <template>
   <div class="wnl-panel card">
     <div class="wnl-header">
-      <h4>📅 万年历 & 干支反查</h4>
+      <h4>万年历 · 干支反查</h4>
     </div>
     
     <!-- 1. 公历查干支 -->
@@ -539,4 +539,32 @@ const handleReverseSearch = () => {
   .reverse-btn { width: 100%; }
   .df-bazi-row { gap: 8px; flex-direction: column; }
 }
+</style>
+
+<style scoped>
+.wnl-panel { border-color: var(--border-soft); border-radius: 9px; color: var(--text-color); background: var(--card-bg); font-family: var(--ui-font); box-shadow: 0 8px 22px color-mix(in srgb, var(--shadow-color) 38%, transparent); }
+.wnl-header { border-bottom: 1px solid var(--border-color); color: var(--text-color); font-family: var(--custom-font); letter-spacing: 0.06em; }
+.section-title { color: var(--text-secondary); }
+.tip-text, .cascade-tip, .sub-text, .wk-cell, .c-lunar, .kongwang-info, .df-terms-time { color: var(--text-muted); }
+.s-input { border-color: var(--border-color); color: var(--text-color); background: var(--paper-strong); }
+.s-input:focus { border-color: var(--primary-color); outline: 0; box-shadow: 0 0 0 3px var(--primary-soft); }
+.single-result-box, .constraint-summary { color: var(--primary-color); background: var(--primary-soft); }
+.main-bazi, .c-gz { color: var(--danger-color); }
+.divider-light, .divider-dashed { border-color: var(--border-soft); }
+.results-list { border-color: var(--border-soft); background: var(--paper-strong); }
+.res-row { border-color: var(--border-soft); }
+.res-row:hover { color: var(--primary-color); background: var(--primary-soft); }
+.empty-results { color: var(--danger-color); background: color-mix(in srgb, var(--danger-color) 8%, var(--paper-strong)); }
+.cal-header, .yj-content { color: var(--text-color); }
+.nav-btn { border-color: var(--border-color); color: var(--text-secondary); background: var(--paper-strong); }
+.nav-btn:hover { color: var(--primary-color); background: var(--primary-soft); }
+.cal-cell:hover { background: var(--surface-muted); }
+.cal-cell.is-selected { border-color: var(--primary-color); background: var(--primary-soft); }
+.cal-cell.is-today { border-color: color-mix(in srgb, var(--danger-color) 62%, var(--border-color)); background: color-mix(in srgb, var(--danger-color) 7%, var(--paper-strong)); }
+.is-selected .c-day, .jieqi-tag { color: var(--primary-color); }
+.detail-footer { border-color: var(--border-color); color: var(--text-color); background: var(--paper-strong); }
+.df-terms-time { background: var(--surface-muted); }
+.yj-icon.yi, .btn-success { background: var(--success-color); }
+.yj-icon.ji { background: var(--danger-color); }
+.btn-primary { background: var(--primary-color); }
 </style>

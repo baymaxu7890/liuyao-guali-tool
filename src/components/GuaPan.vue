@@ -6,7 +6,7 @@
          ========================= -->
     <div class="pan-header card" v-if="isFormMode && !isDemoMode">
       <div class="form-section">
-        <h2 class="form-title-main">✨ 开始排盘</h2>
+        <h2 class="form-title-main"><span class="title-ornament" aria-hidden="true">爻</span>开始排盘</h2>
         
         <!-- 基础信息 -->
         <div class="form-group">
@@ -19,11 +19,11 @@
           <div class="radio-group-styled">
             <label :class="['radio-btn', { active: genderInput === '男' }]">
               <input type="radio" v-model="genderInput" value="男" class="hidden-radio"> 
-              👨 男
+              男
             </label>
             <label :class="['radio-btn', { active: genderInput === '女' }]">
               <input type="radio" v-model="genderInput" value="女" class="hidden-radio"> 
-              👩 女
+              女
             </label>
           </div>
         </div>
@@ -129,13 +129,13 @@
     <!-- =========================
          2. 排盘结果区 (Result Area)
          ========================= -->
-    <div v-else-if="currentGuaLi" class="result-container card" :style="customCardStyle">
+    <div v-else-if="currentGuaLi" class="result-container card">
       <!-- 顶部操作栏 -->
       <div class="result-top-bar" v-if="!isDemoMode">
          <button class="btn btn-sm btn-subtle" @click="handleBackToHome">‹ 返回</button>
          <div class="right-actions">
            <button class="btn btn-sm btn-subtle" @click="handleResetView">↺ 重置视图</button>
-           <button class="btn btn-sm btn-danger-soft" @click="handleDeleteCurrent">🗑️ 删除</button>
+           <button class="btn btn-sm btn-danger-soft" @click="handleDeleteCurrent">删除</button>
          </div>
       </div>
 
@@ -336,15 +336,15 @@
 
       <!-- 工具栏 -->
       <div class="tool-bar-styled" v-if="!isDemoMode">
-        <button class="tool-btn-simple" @click="handleCopyText">📋 复制文本</button>
+        <button class="tool-btn-simple" @click="handleCopyText">复制文本</button>
         <label class="check-label"><input type="checkbox" v-model="showHiddenYao"> 显示藏爻</label>
         <label class="check-label"><input type="checkbox" v-model="showAllBianYao"> 显示全部变爻</label>
         <label class="check-label"><input type="checkbox" v-model="showPositionInCopy"> 复制带爻位</label>
         <button class="tool-btn-simple" @click="showGuaCi = !showGuaCi" :class="{ active: showGuaCi }">
-          📜 {{ showGuaCi ? '隐藏卦辞' : '显示卦辞' }}
+          {{ showGuaCi ? '隐藏卦辞' : '显示卦辞' }}
         </button>
         <button class="tool-btn-simple demo-btn" @click="isDemoMode = true">
-           📺 演示模式
+           演示模式
         </button>
       </div>
 
@@ -352,14 +352,14 @@
       <div v-if="showGuaCi && !isDemoMode" class="guaci-box">
          <!-- 本卦 -->
          <div v-if="getGuaCiData(currentGuaLi.benGua.name)" class="guaci-section">
-            <h4 class="gc-main-title">🔹 本卦：{{ currentGuaLi.benGua.name }}</h4>
+            <h4 class="gc-main-title">本卦 · {{ currentGuaLi.benGua.name }}</h4>
             <p class="gc-text">{{ getGuaCiData(currentGuaLi.benGua.name)?.guaci }}</p>
             <div v-for="(line, idx) in getGuaCiYaoLines(currentGuaLi.benGua.name)" :key="idx" class="yaoci-line">{{ line }}</div>
         </div>
         <!-- 变卦 -->
         <div v-if="!isStaticGua && currentGuaLi.bianGua && currentGuaLi.benGua.name !== currentGuaLi.bianGua.name" class="guaci-section mt-4">
             <div class="divider"></div>
-            <h4 class="gc-main-title">🔸 变卦：{{ currentGuaLi.bianGua.name }}</h4>
+            <h4 class="gc-main-title">变卦 · {{ currentGuaLi.bianGua.name }}</h4>
             <p class="gc-text">{{ getGuaCiData(currentGuaLi.bianGua.name)?.guaci }}</p>
             <div v-for="(line, idx) in getGuaCiYaoLines(currentGuaLi.bianGua.name)" :key="idx" class="yaoci-line">{{ line }}</div>
         </div>
@@ -368,14 +368,14 @@
       <!-- 断语笔记 -->
       <div class="duan-box" v-if="!isDemoMode">
         <div class="duan-header">
-           <h4>✍️ 断卦记录 / 笔记</h4>
-           <span v-if="isSavedInList" class="status-badge saved">⚠️ 已归档</span>
-           <span v-else class="status-badge unsaved">⚠️ 未归档</span>
+           <h4>断卦记录 / 笔记</h4>
+           <span v-if="isSavedInList" class="status-badge saved">已归档</span>
+           <span v-else class="status-badge unsaved">未归档</span>
         </div>
         <textarea v-model="duanGuaContent" class="duan-area" placeholder="在此处记录断语..."></textarea>
         <div class="bottom-btns">
-          <button v-if="!isSavedInList" class="btn btn-save" @click="handleSaveToLibrary">💾 归档到卦例库</button>
-          <button class="btn btn-update" @click="handleUpdateInfo">💾 更新保存内容</button>
+          <button v-if="!isSavedInList" class="btn btn-save" @click="handleSaveToLibrary">归档到卦例库</button>
+          <button class="btn btn-update" @click="handleUpdateInfo">更新保存内容</button>
         </div>
       </div>
     </div>
@@ -455,7 +455,6 @@ const dateInput = ref(getLocalNowStr())
 // === State: UI Controls (界面控制) ===
 const isDemoMode = ref(false)
 const showPositionInCopy = ref(true)
-const customCardBg = ref<string | null>(null)
 const duanGuaContent = ref('')
 const showGuaCi = ref(false)
 const showExplanationModal = ref(false)
@@ -478,11 +477,6 @@ const isStaticGua = computed(() => {
 
 const isStaticView = computed(() => {
   return isStaticGua.value && !showAllBianYao.value
-})
-
-const customCardStyle = computed(() => {
-  if (customCardBg.value) return { backgroundColor: customCardBg.value }
-  return {} 
 })
 
 // [Fixed] 手动起卦预览
@@ -520,10 +514,8 @@ onMounted(() => {
       if (typeof p.showGuaCi !== 'undefined') showGuaCi.value = p.showGuaCi
     } catch(e) {}
   }
-  const savedBg = localStorage.getItem(USER_CARD_BG_KEY);
-  if (savedBg) {
-    customCardBg.value = savedBg;
-  }
+  // 旧版允许单独修改卡片底色，容易破坏整套配色。新版由意境主题统一控制。
+  localStorage.removeItem(USER_CARD_BG_KEY)
   if (route.params.id) {
     loadDataFromRoute(route.params.id as string)
   } else {
@@ -576,7 +568,6 @@ const handleResetView = () => {
   showGuaCi.value = false;
   localStorage.removeItem(VIEW_SETTINGS_KEY);
   localStorage.removeItem(USER_CARD_BG_KEY);
-  customCardBg.value = null; 
   location.reload();
 }
 
@@ -960,4 +951,92 @@ const formatDateFull = (d: Date | string) => {
     transition: all 0.3s;
 }
 .demo-exit-float:hover { transform: scale(1.1); }
+</style>
+
+<style scoped>
+.gua-pan-container { max-width: 860px; padding: 22px 0 34px; color: var(--text-color); }
+.card {
+  padding: 24px 28px;
+  border: 1px solid var(--border-soft);
+  border-radius: 9px;
+  color: var(--text-color);
+  background: var(--card-bg);
+  box-shadow: 0 8px 22px color-mix(in srgb, var(--shadow-color) 45%, transparent);
+}
+.form-title-main {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--border-soft);
+  color: var(--text-color);
+  font-family: var(--custom-font);
+  font-size: 25px;
+  letter-spacing: 0.08em;
+}
+.title-ornament { display: inline-grid; place-items: center; width: 29px; height: 29px; border-radius: 50%; color: var(--paper-strong); background: var(--primary-color); font-size: 13px; letter-spacing: 0; }
+.form-label { color: var(--text-secondary); font-size: 15px; }
+.form-label.required::after { color: var(--danger-color); }
+.form-input, .form-select, .duan-area {
+  border-color: var(--border-color);
+  border-radius: 5px;
+  color: var(--text-color);
+  background: var(--paper-strong);
+}
+.form-input::placeholder, .duan-area::placeholder { color: var(--text-muted); }
+.form-input:focus, .form-select:focus, .duan-area:focus { border-color: var(--primary-color); box-shadow: 0 0 0 3px var(--primary-soft); }
+.radio-group-styled { gap: 10px; }
+.radio-btn { min-width: 68px; justify-content: center; border-color: var(--border-soft); border-radius: 999px; color: var(--text-secondary); background: var(--paper-strong); }
+.radio-btn:hover { border-color: var(--border-color); background: var(--surface-muted); }
+.radio-btn.active { border-color: var(--primary-color); color: var(--primary-color); background: var(--primary-soft); }
+.mode-tabs { gap: 7px; }
+.tab-btn { border-color: var(--border-soft); border-radius: 5px; color: var(--text-secondary); background: var(--paper-strong); }
+.tab-btn:hover { border-color: var(--border-color); color: var(--primary-color); background: var(--surface-muted); }
+.tab-btn.active { border-color: var(--primary-color); color: var(--paper-strong); background: var(--primary-color); box-shadow: none; }
+.tip, .tip-sm { color: var(--text-secondary); }
+.action-buttons { gap: 10px; }
+.btn { border-radius: 5px; }
+.btn-primary, .btn-update { color: var(--paper-strong); background: var(--primary-color); }
+.btn-primary:hover, .btn-update:hover { background: var(--primary-hover); }
+.btn-light, .btn-subtle { border: 1px solid var(--border-soft); color: var(--text-secondary); background: var(--surface-muted); }
+.btn-light:hover, .btn-subtle:hover { border-color: var(--border-color); color: var(--primary-color); background: var(--paper-strong); }
+.btn-danger-soft { border: 1px solid color-mix(in srgb, var(--danger-color) 24%, transparent); color: var(--danger-color); background: color-mix(in srgb, var(--danger-color) 8%, var(--paper-strong)); }
+.reason-title, .id-tag, .value, .bazi, .head-liushen, .main-text, .gc-main-title { color: var(--text-color); }
+.reason-title { font-size: 21px; }
+.title-bar { width: 3px; border-radius: 0; background: var(--primary-color); }
+.info-grid, .label, .muted, .check-label, .yaoci-line { color: var(--text-secondary); }
+.kongwang, .gua-name-lg { color: var(--primary-color); }
+.ss-tag { border-color: var(--border-soft); color: var(--text-secondary); background: var(--surface-muted); }
+.divider-light, .divider { border-color: var(--border-soft); }
+.gua-name-lg { font-size: 25px; }
+.gua-meta { color: var(--text-muted); }
+.seg, .bar-visual.yang, .bar-visual.yin::before, .bar-visual.yin::after { background-color: var(--text-color); }
+.css-bar.moving-red .seg { background-color: var(--danger-color); }
+.mini-txt-tag.red, .cang-yao.is-fu { color: var(--danger-color) !important; }
+.mini-txt-tag.green { color: var(--success-color); }
+.mini-txt-tag.orange { color: var(--gold-color); }
+.mini-txt-tag.grey, .cang-yao { color: var(--text-muted); }
+.badge-shi { background: var(--danger-color); }
+.badge-ying, .btn-save { background: var(--success-color); }
+.tool-bar-styled { border: 1px solid var(--border-soft); border-radius: 6px; background: var(--surface-muted); }
+.tool-btn-simple { border-color: var(--border-color); color: var(--primary-color); background: var(--paper-strong); }
+.tool-btn-simple.active { color: var(--paper-strong); background: var(--primary-color); }
+.status-badge.unsaved { color: var(--primary-color); border-color: var(--primary-color); background: transparent; }
+.status-badge.saved { color: var(--success-color); background: color-mix(in srgb, var(--success-color) 10%, var(--paper-strong)); }
+.duan-area { font-family: var(--custom-font); }
+.guaci-box { border-color: var(--border-color); color: var(--text-color); background: var(--surface-muted); }
+.manual-preview-bar { border: 1px solid var(--border-soft); background: var(--surface-muted); }
+.p-label, .manual-row.header-row { color: var(--text-secondary); }
+.p-value { color: var(--text-color); }
+.checkmark { border: 1px solid var(--border-color); background: var(--paper-strong); }
+.check-container:hover input ~ .checkmark { background: var(--surface-muted); }
+.check-container input:checked ~ .checkmark { border-color: var(--primary-color); background: var(--primary-color); }
+.explanation-card { border: 1px solid var(--border-color); background: var(--card-bg); }
+.exp-header { color: var(--primary-color); border-color: var(--border-soft); }
+
+@media (max-width: 920px) {
+  .gua-pan-container { padding: 14px 10px 24px; }
+  .card { padding: 20px; }
+}
 </style>

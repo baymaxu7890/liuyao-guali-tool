@@ -4,7 +4,7 @@
       <div v-for="(item, index) in list" :key="index" class="gejue-item">
         <div class="item-header">
           <h4>{{ item.title }}</h4>
-          <button class="del-btn" @click="deleteItem(index)" title="删除">🗑️</button>
+          <button class="del-btn" @click="deleteItem(index)" title="删除">删除</button>
         </div>
         <div class="item-text">
           <p v-for="(line, lIdx) in item.content.split('\n')" :key="lIdx">{{ line }}</p>
@@ -14,7 +14,7 @@
 
     <div class="add-box">
       <div class="add-header" @click="showAdd = !showAdd">
-        ➕ 添加新歌诀 {{ showAdd ? '▼' : '▶' }}
+        添加新歌诀 {{ showAdd ? '收起' : '展开' }}
       </div>
       <div v-if="showAdd" class="add-form">
         <input v-model="newTitle" placeholder="标题 (如: 六兽歌)" class="form-input">
@@ -79,4 +79,18 @@ const addItem = () => {
 .form-input { padding: 8px; border: 1px solid #ddd; border-radius: 4px; }
 .form-area { padding: 8px; border: 1px solid #ddd; border-radius: 4px; height: 60px; }
 .btn-save { padding: 8px; background: #667eea; color: white; border: none; border-radius: 4px; cursor: pointer; }
+</style>
+
+<style scoped>
+.panel-container { border-color: var(--border-soft); border-radius: 9px; background: var(--card-bg); box-shadow: 0 8px 22px color-mix(in srgb, var(--shadow-color) 38%, transparent); }
+.gejue-item { border-color: var(--border-soft); }
+.item-header h4 { border-left: 2px solid var(--primary-color); color: var(--text-color); font-family: var(--custom-font); font-size: 17px; }
+.del-btn { color: var(--text-muted); font-size: 11px; }
+.del-btn:hover { color: var(--danger-color); opacity: 1; }
+.item-text { color: var(--text-secondary); background: var(--surface-muted); }
+.add-box { border-color: var(--border-soft); background: var(--paper-strong); }
+.add-header { color: var(--primary-color); }
+.form-input, .form-area { border-color: var(--border-color); color: var(--text-color); background: var(--paper-strong); }
+.form-input:focus, .form-area:focus { border-color: var(--primary-color); outline: 0; box-shadow: 0 0 0 3px var(--primary-soft); }
+.btn-save { color: var(--paper-strong); background: var(--primary-color); }
 </style>
