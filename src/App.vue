@@ -134,10 +134,10 @@ type ThemePalette = {
 
 const themePalettes: Record<string, ThemePalette> = {
   xuanzhi: {
-    label: '宣纸', primary: '#31564B', primaryHover: '#27483F', primarySoft: '#E5ECE6',
-    canvas: '#E7E0D4', paper: '#F8F3E8', paperStrong: '#FFFCF6', surface: '#F1E9DA',
-    border: '#D8CDBB', borderSoft: '#E7DFD2', ink: '#29322F', secondary: '#56605B',
-    muted: '#8B918C', danger: '#A84D46', success: '#527D62', gold: '#A8864B', shadow: 'rgba(49,43,34,0.12)'
+    label: '古卷', primary: '#292824', primaryHover: '#191816', primarySoft: '#E8DCC4',
+    canvas: '#D5C7AD', paper: '#F1E2C4', paperStrong: '#FBF3E2', surface: '#EAD8B6',
+    border: '#CDB994', borderSoft: '#E0D0B2', ink: '#26231E', secondary: '#5F584C',
+    muted: '#8B806D', danger: '#A6483F', success: '#536F57', gold: '#9B7435', shadow: 'rgba(42,34,22,0.16)'
   },
   qingci: {
     label: '青瓷', primary: '#416C68', primaryHover: '#345A57', primarySoft: '#E2ECE9',
