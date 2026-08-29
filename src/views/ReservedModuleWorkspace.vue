@@ -41,7 +41,7 @@ const moduleDescription = computed(() => String(route.meta.description || 'шпеци
 </style>
 
 <style scoped>
-.reserved-card { border-color: var(--border-soft); border-radius: 10px; background: var(--card-bg); box-shadow: 0 12px 32px color-mix(in srgb, var(--shadow-color) 45%, transparent); }
+.reserved-card { border-color: var(--reading-border); border-radius: 10px; background: var(--reading-surface); box-shadow: 0 12px 32px color-mix(in srgb, var(--shadow-color) 45%, transparent); }
 .module-icon { display: grid; place-items: center; width: 58px; height: 58px; margin: 0 auto 14px; border: 1px solid var(--primary-color); border-radius: 50%; color: var(--primary-color); font-family: var(--custom-font); font-size: 25px; }
 .reserved-badge { color: var(--primary-color); background: var(--primary-soft); }
 .reserved-card h2 { color: var(--text-color); font-family: var(--custom-font); letter-spacing: 0.08em; }

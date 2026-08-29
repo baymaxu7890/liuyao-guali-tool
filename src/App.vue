@@ -14,9 +14,9 @@
         <!-- 外观控制区 -->
         <div class="appearance-tools">
             <div class="tool-item">
-              <label>字体:</label>
+              <label>题字:</label>
               <select v-model="currentFont" @change="updateTheme" class="appearance-select">
-                <option value="'Songti SC', 'STSong', 'SimSun', serif">宋体</option>
+                <option value="'Songti SC', 'STSong', 'SimSun', serif">宋体（清晰）</option>
                 <option value="'KaiTi', '楷体', 'STKaiti', serif">楷书</option>
                 <option value="'FangSong', '仿宋', 'STFangsong', serif">仿宋</option>
                 <option value="'Microsoft YaHei', 'PingFang SC', sans-serif">黑体</option>
@@ -86,7 +86,7 @@
                   <span>整体明度</span>
                   <strong>{{ brightnessLabel }}</strong>
                 </div>
-                <input v-model.number="themeBrightness" type="range" min="-10" max="10" step="1" @input="updateTheme">
+                <input v-model.number="themeBrightness" type="range" min="-6" max="8" step="1" @input="updateTheme">
                 <div class="brightness-scale"><span>沉静</span><span>标准</span><span>明朗</span></div>
               </div>
 
@@ -199,10 +199,10 @@ type ThemePalette = {
 
 const themePalettes: Record<string, ThemePalette> = {
   xuanzhi: {
-    label: '古卷', primary: '#292824', primaryHover: '#191816', primarySoft: '#E8DCC4',
-    canvas: '#D5C7AD', paper: '#F1E2C4', paperStrong: '#FBF3E2', surface: '#EAD8B6',
-    border: '#CDB994', borderSoft: '#E0D0B2', ink: '#26231E', secondary: '#5F584C',
-    muted: '#8B806D', danger: '#A6483F', success: '#536F57', gold: '#9B7435', shadow: 'rgba(42,34,22,0.16)'
+    label: '古卷', primary: '#262522', primaryHover: '#171715', primarySoft: '#E8D8B9',
+    canvas: '#D8CBB4', paper: '#F3E5C8', paperStrong: '#FFF9EC', surface: '#EAD6AD',
+    border: '#C9B081', borderSoft: '#E2D0AB', ink: '#211F1B', secondary: '#4F4A41',
+    muted: '#756F65', danger: '#A23F38', success: '#476B50', gold: '#916A2F', shadow: 'rgba(38,32,23,0.15)'
   },
   shuimo: {
     label: '水墨', primary: '#2C2C29', primaryHover: '#1C1C1A', primarySoft: '#E5E3DB',
@@ -240,7 +240,7 @@ const currentPalette = ref('xuanzhi')
 const currentFont = ref("'Songti SC', 'STSong', 'SimSun', serif")
 const showThemePanel = ref(false)
 const themeBrightness = ref(0)
-const customTheme = reactive({ primary: '#292824', paper: '#F1E2C4' })
+const customTheme = reactive({ primary: '#262522', paper: '#F3E5C8' })
 
 const clamp = (value: number, min: number, max: number) => Math.min(max, Math.max(min, value))
 const normalizeHex = (hex: string) => /^#[0-9a-f]{6}$/i.test(hex) ? hex : '#808080'
@@ -294,7 +294,7 @@ const adjustLightness = (hex: string, amount: number) => {
 }
 const normalizePaperColor = (hex: string) => {
   const hsl = hexToHsl(hex)
-  return hslToHex(hsl.h, clamp(hsl.s, 5, 38), clamp(hsl.l, 76, 92))
+  return hslToHex(hsl.h, clamp(hsl.s, 5, 34), clamp(hsl.l, 82, 94))
 }
 const normalizePrimaryColor = (hex: string) => {
   const hsl = hexToHsl(hex)
@@ -384,8 +384,8 @@ const applyCustomTheme = () => {
 const resetThemeAdjustments = () => {
   currentPalette.value = 'xuanzhi'
   themeBrightness.value = 0
-  customTheme.primary = '#292824'
-  customTheme.paper = '#F1E2C4'
+  customTheme.primary = '#262522'
+  customTheme.paper = '#F3E5C8'
   updateTheme()
 }
 
@@ -408,6 +408,10 @@ const updateTheme = () => {
   root.style.setProperty('--success-color', palette.success)
   root.style.setProperty('--gold-color', palette.gold)
   root.style.setProperty('--shadow-color', palette.shadow)
+  root.style.setProperty('--reading-surface', mixColor(palette.paperStrong, '#FFFFFF', 0.3))
+  root.style.setProperty('--reading-border', mixColor(palette.border, palette.ink, 0.15))
+  root.style.setProperty('--text-strong', mixColor(palette.ink, '#11110F', 0.24))
+  root.style.setProperty('--hidden-yao-color', mixColor('#5D6263', palette.paperStrong, 0.3))
   root.style.setProperty('--custom-font', currentFont.value)
   localStorage.setItem(THEME_PALETTE_KEY, currentPalette.value)
   localStorage.setItem(FONT_FAMILY_KEY, currentFont.value)
@@ -435,7 +439,7 @@ onMounted(() => {
   }
 
   const savedBrightness = Number(localStorage.getItem(THEME_BRIGHTNESS_KEY))
-  if (Number.isFinite(savedBrightness)) themeBrightness.value = clamp(savedBrightness, -10, 10)
+  if (Number.isFinite(savedBrightness)) themeBrightness.value = clamp(savedBrightness, -6, 8)
   
   const savedFont = localStorage.getItem(FONT_FAMILY_KEY)
   if (savedFont) currentFont.value = savedFont

@@ -1,22 +1,27 @@
 :root {
-  --primary-color: #292824;
-  --primary-hover: #191816;
-  --primary-soft: #e8dcc4;
-  --canvas-bg: #d5c7ad;
-  --card-bg: #f1e2c4;
-  --paper-strong: #fbf3e2;
-  --surface-muted: #ead8b6;
-  --border-color: #cdb994;
-  --border-soft: #e0d0b2;
-  --text-color: #26231e;
-  --text-secondary: #5f584c;
-  --text-muted: #8b806d;
-  --danger-color: #a6483f;
-  --success-color: #536f57;
-  --gold-color: #9b7435;
-  --shadow-color: rgba(42, 34, 22, 0.16);
+  --primary-color: #262522;
+  --primary-hover: #171715;
+  --primary-soft: #e8d8b9;
+  --canvas-bg: #d8cbb4;
+  --card-bg: #f3e5c8;
+  --paper-strong: #fff9ec;
+  --surface-muted: #ead6ad;
+  --border-color: #c9b081;
+  --border-soft: #e2d0ab;
+  --text-color: #211f1b;
+  --text-secondary: #4f4a41;
+  --text-muted: #756f65;
+  --danger-color: #a23f38;
+  --success-color: #476b50;
+  --gold-color: #916a2f;
+  --shadow-color: rgba(38, 32, 23, 0.15);
   --ui-font: "Microsoft YaHei", "PingFang SC", "Noto Sans CJK SC", sans-serif;
+  --reading-font: "Microsoft YaHei", "PingFang SC", "Noto Sans CJK SC", sans-serif;
   --custom-font: "Songti SC", "STSong", "SimSun", serif;
+  --reading-surface: #fffcf7;
+  --reading-border: #aa9872;
+  --text-strong: #1d1c18;
+  --hidden-yao-color: #8e8f8c;
   color: var(--text-color);
   background: var(--canvas-bg);
   font-family: var(--ui-font);
@@ -60,8 +65,12 @@ button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visib
   transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
 }
 
-.main-text, .gua-name-lg, .gc-text, .reason-title, .bazi {
+.gua-name-lg, .reason-title {
   font-family: var(--custom-font) !important;
+}
+
+.main-text, .gc-text, .yaoci-line, .duan-area, .bazi, .info-grid {
+  font-family: var(--reading-font) !important;
 }
 
 .modal-overlay { z-index: 9999 !important; }

@@ -123,7 +123,7 @@ const handleDirectImport = () => {
 
 <style scoped>
 .modal-overlay { background: color-mix(in srgb, var(--text-color) 46%, transparent); backdrop-filter: blur(3px); }
-.modal-card { border: 1px solid var(--border-color); border-radius: 9px; color: var(--text-color); background: var(--card-bg); box-shadow: 0 18px 50px var(--shadow-color); }
+.modal-card { border: 1px solid var(--reading-border); border-radius: 9px; color: var(--text-color); background: var(--reading-surface); box-shadow: 0 18px 50px var(--shadow-color); }
 .modal-header, .modal-footer { border-color: var(--border-soft); background: var(--surface-muted); }
 .modal-header h3 { color: var(--text-color); font-family: var(--custom-font); letter-spacing: 0.05em; }
 .close-btn, .hint { color: var(--text-muted); }

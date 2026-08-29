@@ -542,7 +542,7 @@ const handleReverseSearch = () => {
 </style>
 
 <style scoped>
-.wnl-panel { border-color: var(--border-soft); border-radius: 9px; color: var(--text-color); background: var(--card-bg); font-family: var(--ui-font); box-shadow: 0 8px 22px color-mix(in srgb, var(--shadow-color) 38%, transparent); }
+.wnl-panel { border-color: var(--reading-border); border-radius: 9px; color: var(--text-color); background: var(--reading-surface); font-family: var(--ui-font); box-shadow: 0 8px 22px color-mix(in srgb, var(--shadow-color) 38%, transparent); }
 .wnl-header { border-bottom: 1px solid var(--border-color); color: var(--text-color); font-family: var(--custom-font); letter-spacing: 0.06em; }
 .section-title { color: var(--text-secondary); }
 .tip-text, .cascade-tip, .sub-text, .wk-cell, .c-lunar, .kongwang-info, .df-terms-time { color: var(--text-muted); }

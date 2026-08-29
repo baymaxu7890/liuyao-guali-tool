@@ -957,10 +957,10 @@ const formatDateFull = (d: Date | string) => {
 .gua-pan-container { max-width: 860px; padding: 22px 0 34px; color: var(--text-color); }
 .card {
   padding: 24px 28px;
-  border: 1px solid var(--border-soft);
+  border: 1px solid var(--reading-border);
   border-radius: 9px;
   color: var(--text-color);
-  background: var(--card-bg);
+  background: var(--reading-surface);
   box-shadow: 0 8px 22px color-mix(in srgb, var(--shadow-color) 45%, transparent);
 }
 .form-title-main {
@@ -1002,7 +1002,7 @@ const formatDateFull = (d: Date | string) => {
 .btn-light, .btn-subtle { border: 1px solid var(--border-soft); color: var(--text-secondary); background: var(--surface-muted); }
 .btn-light:hover, .btn-subtle:hover { border-color: var(--border-color); color: var(--primary-color); background: var(--paper-strong); }
 .btn-danger-soft { border: 1px solid color-mix(in srgb, var(--danger-color) 24%, transparent); color: var(--danger-color); background: color-mix(in srgb, var(--danger-color) 8%, var(--paper-strong)); }
-.reason-title, .id-tag, .value, .bazi, .head-liushen, .main-text, .gc-main-title { color: var(--text-color); }
+.reason-title, .id-tag, .value, .bazi, .head-liushen, .main-text, .gc-main-title { color: var(--text-strong); }
 .reason-title { font-size: 21px; }
 .title-bar { width: 3px; border-radius: 0; background: var(--primary-color); }
 .info-grid, .label, .muted, .check-label, .yaoci-line { color: var(--text-secondary); }
@@ -1016,7 +1016,9 @@ const formatDateFull = (d: Date | string) => {
 .mini-txt-tag.red, .cang-yao.is-fu { color: var(--danger-color) !important; }
 .mini-txt-tag.green { color: var(--success-color); }
 .mini-txt-tag.orange { color: var(--gold-color); }
-.mini-txt-tag.grey, .cang-yao { color: var(--text-muted); }
+.mini-txt-tag.grey { color: var(--text-muted); }
+.cang-yao { color: var(--hidden-yao-color); font-family: var(--reading-font); font-weight: 500; }
+.cang-yao.is-fu { color: var(--danger-color) !important; font-weight: 700; }
 .badge-shi { background: var(--danger-color); }
 .badge-ying, .btn-save { background: var(--success-color); }
 .tool-bar-styled { border: 1px solid var(--border-soft); border-radius: 6px; background: var(--surface-muted); }
@@ -1024,7 +1026,7 @@ const formatDateFull = (d: Date | string) => {
 .tool-btn-simple.active { color: var(--paper-strong); background: var(--primary-color); }
 .status-badge.unsaved { color: var(--primary-color); border-color: var(--primary-color); background: transparent; }
 .status-badge.saved { color: var(--success-color); background: color-mix(in srgb, var(--success-color) 10%, var(--paper-strong)); }
-.duan-area { font-family: var(--custom-font); }
+.duan-area { color: var(--text-strong); background: var(--reading-surface); font-family: var(--reading-font); font-weight: 500; line-height: 1.72; }
 .guaci-box { border-color: var(--border-color); color: var(--text-color); background: var(--surface-muted); }
 .manual-preview-bar { border: 1px solid var(--border-soft); background: var(--surface-muted); }
 .p-label, .manual-row.header-row { color: var(--text-secondary); }
@@ -1034,6 +1036,15 @@ const formatDateFull = (d: Date | string) => {
 .check-container input:checked ~ .checkmark { border-color: var(--primary-color); background: var(--primary-color); }
 .explanation-card { border: 1px solid var(--border-color); background: var(--card-bg); }
 .exp-header { color: var(--primary-color); border-color: var(--border-soft); }
+.main-text { font-family: var(--reading-font) !important; font-weight: 700; letter-spacing: 0.015em; }
+.main-text.muted { color: var(--text-secondary); font-weight: 600; }
+.info-grid, .ss-tag, .check-label, .gc-text, .yaoci-line { font-family: var(--reading-font); }
+.info-grid { color: var(--text-secondary); font-weight: 500; line-height: 1.72; }
+.bazi { font-family: var(--reading-font); font-weight: 700; letter-spacing: 0.025em; }
+.gua-name-lg { color: var(--text-strong); font-weight: 800; }
+.gua-meta { color: var(--text-secondary); }
+.seg, .bar-visual.yang, .bar-visual.yin::before, .bar-visual.yin::after { background-color: var(--text-strong); }
+.tool-bar-styled, .guaci-box, .manual-preview-bar { background: color-mix(in srgb, var(--reading-surface) 68%, var(--surface-muted)); }
 
 @media (max-width: 920px) {
   .gua-pan-container { padding: 14px 10px 24px; }

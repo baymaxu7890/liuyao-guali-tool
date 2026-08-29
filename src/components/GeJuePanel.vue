@@ -82,7 +82,7 @@ const addItem = () => {
 </style>
 
 <style scoped>
-.panel-container { border-color: var(--border-soft); border-radius: 9px; background: var(--card-bg); box-shadow: 0 8px 22px color-mix(in srgb, var(--shadow-color) 38%, transparent); }
+.panel-container { border-color: var(--reading-border); border-radius: 9px; background: var(--reading-surface); box-shadow: 0 8px 22px color-mix(in srgb, var(--shadow-color) 38%, transparent); }
 .gejue-item { border-color: var(--border-soft); }
 .item-header h4 { border-left: 2px solid var(--primary-color); color: var(--text-color); font-family: var(--custom-font); font-size: 17px; }
 .del-btn { color: var(--text-muted); font-size: 11px; }

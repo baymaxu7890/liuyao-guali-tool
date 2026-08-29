@@ -27,7 +27,7 @@ import GeJuePanel from '@/components/GeJuePanel.vue'
 
 <style scoped>
 .workspace-page { max-width: 1120px; padding: 26px; }
-.workspace-heading { padding: 22px 24px; border-color: var(--border-soft); border-radius: 9px; background: var(--card-bg); box-shadow: 0 6px 18px color-mix(in srgb, var(--shadow-color) 34%, transparent); }
+.workspace-heading { padding: 22px 24px; border-color: var(--reading-border); border-radius: 9px; background: var(--reading-surface); box-shadow: 0 6px 18px color-mix(in srgb, var(--shadow-color) 34%, transparent); }
 .workspace-kicker { color: var(--gold-color); font-size: 12px; letter-spacing: 0.12em; }
 .workspace-heading h2 { display: flex; align-items: center; gap: 10px; color: var(--text-color); font-family: var(--custom-font); font-size: 24px; letter-spacing: 0.05em; }
 .heading-mark { display: inline-grid; place-items: center; width: 28px; height: 28px; border-radius: 50%; color: var(--paper-strong); background: var(--primary-color); font-size: 12px; }

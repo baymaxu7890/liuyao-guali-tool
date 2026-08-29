@@ -467,13 +467,13 @@ onMounted(() => {
 
 <style scoped>
 .workspace-page { max-width: 1120px; padding: 26px; }
-.workspace-heading, .backup-card { border-color: var(--border-soft); border-radius: 9px; background: var(--card-bg); box-shadow: 0 6px 18px color-mix(in srgb, var(--shadow-color) 34%, transparent); }
+.workspace-heading, .backup-card { border-color: var(--reading-border); border-radius: 9px; background: var(--reading-surface); box-shadow: 0 6px 18px color-mix(in srgb, var(--shadow-color) 34%, transparent); }
 .workspace-kicker, .card-kicker { color: var(--gold-color); letter-spacing: 0.08em; }
 .workspace-heading h2 { display: flex; align-items: center; gap: 10px; color: var(--text-color); font-family: var(--custom-font); font-size: 24px; }
 .heading-mark { display: inline-grid; place-items: center; width: 28px; height: 28px; border-radius: 50%; color: var(--paper-strong); background: var(--primary-color); font-size: 12px; }
 .workspace-heading p, .action-card p, .cloud-description { color: var(--text-secondary); }
 .backup-card h3 { color: var(--text-color); font-family: var(--custom-font); }
-.desktop-card, .cloud-card { border-color: var(--border-color); background: var(--card-bg); }
+.desktop-card, .cloud-card { border-color: var(--reading-border); background: var(--reading-surface); }
 .folder-display { color: var(--text-secondary); background: var(--surface-muted); }
 .folder-display strong { color: var(--text-color); }
 .status-list div { border-color: var(--border-soft); }
