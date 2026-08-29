@@ -17,10 +17,10 @@
   --shadow-color: rgba(38, 32, 23, 0.15);
   --ui-font: "Microsoft YaHei", "PingFang SC", "Noto Sans CJK SC", sans-serif;
   --reading-font: "Microsoft YaHei", "PingFang SC", "Noto Sans CJK SC", sans-serif;
-  --custom-font: "Songti SC", "STSong", "SimSun", serif;
-  --reading-surface: #fffcf7;
+  --custom-font: "KaiTi", "楷体", "STKaiti", serif;
+  --reading-surface: #fdf8ee;
   --reading-border: #aa9872;
-  --text-strong: #1d1c18;
+  --text-strong: #211f1b;
   --hidden-yao-color: #8e8f8c;
   color: var(--text-color);
   background: var(--canvas-bg);

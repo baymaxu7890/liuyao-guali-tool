@@ -16,8 +16,8 @@
             <div class="tool-item">
               <label>题字:</label>
               <select v-model="currentFont" @change="updateTheme" class="appearance-select">
-                <option value="'Songti SC', 'STSong', 'SimSun', serif">宋体（清晰）</option>
-                <option value="'KaiTi', '楷体', 'STKaiti', serif">楷书</option>
+                <option value="'KaiTi', '楷体', 'STKaiti', serif">楷书（默认）</option>
+                <option value="'Songti SC', 'STSong', 'SimSun', serif">宋体</option>
                 <option value="'FangSong', '仿宋', 'STFangsong', serif">仿宋</option>
                 <option value="'Microsoft YaHei', 'PingFang SC', sans-serif">黑体</option>
               </select>
@@ -236,8 +236,9 @@ const themePalettes: Record<string, ThemePalette> = {
   }
 }
 
+const KAI_FONT = "'KaiTi', '楷体', 'STKaiti', serif"
 const currentPalette = ref('xuanzhi')
-const currentFont = ref("'Songti SC', 'STSong', 'SimSun', serif")
+const currentFont = ref(KAI_FONT)
 const showThemePanel = ref(false)
 const themeBrightness = ref(0)
 const customTheme = reactive({ primary: '#262522', paper: '#F3E5C8' })
@@ -344,6 +345,7 @@ const brightnessLabel = computed(() => themeBrightness.value === 0 ? '标准' : 
 
 const THEME_PALETTE_KEY = 'user-theme-palette'
 const FONT_FAMILY_KEY = 'user-font-family'
+const DEFAULT_FONT_MIGRATION_KEY = 'user-font-default-kaiti-v1'
 const CUSTOM_THEME_KEY = 'user-custom-theme'
 const THEME_BRIGHTNESS_KEY = 'user-theme-brightness'
 
@@ -408,9 +410,9 @@ const updateTheme = () => {
   root.style.setProperty('--success-color', palette.success)
   root.style.setProperty('--gold-color', palette.gold)
   root.style.setProperty('--shadow-color', palette.shadow)
-  root.style.setProperty('--reading-surface', mixColor(palette.paperStrong, '#FFFFFF', 0.3))
+  root.style.setProperty('--reading-surface', mixColor(palette.paperStrong, '#FFFFFF', 0.22))
   root.style.setProperty('--reading-border', mixColor(palette.border, palette.ink, 0.15))
-  root.style.setProperty('--text-strong', mixColor(palette.ink, '#11110F', 0.24))
+  root.style.setProperty('--text-strong', mixColor(palette.ink, '#11110F', 0.1))
   root.style.setProperty('--hidden-yao-color', mixColor('#5D6263', palette.paperStrong, 0.3))
   root.style.setProperty('--custom-font', currentFont.value)
   localStorage.setItem(THEME_PALETTE_KEY, currentPalette.value)
@@ -442,7 +444,12 @@ onMounted(() => {
   if (Number.isFinite(savedBrightness)) themeBrightness.value = clamp(savedBrightness, -6, 8)
   
   const savedFont = localStorage.getItem(FONT_FAMILY_KEY)
-  if (savedFont) currentFont.value = savedFont
+  if (!localStorage.getItem(DEFAULT_FONT_MIGRATION_KEY)) {
+    currentFont.value = KAI_FONT
+    localStorage.setItem(DEFAULT_FONT_MIGRATION_KEY, '1')
+  } else if (savedFont) {
+    currentFont.value = savedFont
+  }
 
   updateTheme()
 
