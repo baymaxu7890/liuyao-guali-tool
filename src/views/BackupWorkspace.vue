@@ -4,14 +4,55 @@
       <div>
         <span class="workspace-kicker">综合排盘 · 数据保护</span>
         <h2>☁️ 云端与本地备份</h2>
-        <p>云端部署后，归档、更新、删除或导入卦例会自动由服务器同步到坚果云、Yandex Disk 和 Box；浏览器不保存任何云盘凭据。</p>
+        <p v-if="desktopState.enabled">桌面版会自动写入 Windows 本地备份目录；云端登录或网络异常不会影响排盘、日历和本地保存。</p>
+        <p v-else>云端部署后，归档、更新、删除或导入卦例会自动由服务器同步到坚果云、Yandex Disk 和 Box；浏览器不保存任何云盘凭据。</p>
       </div>
       <span :class="['status-badge', statusTone]">{{ statusLabel }}</span>
     </div>
 
-    <div v-if="!state.supported" class="notice warning">
+    <div v-if="!state.supported && !desktopState.enabled" class="notice warning">
       当前浏览器不支持直接写入本地目录。请使用 Chrome 或 Edge，或者使用下方“下载 JSON”方式备份。
     </div>
+
+    <article v-if="desktopState.enabled" class="backup-card desktop-card">
+      <div class="card-title-row">
+        <div>
+          <span class="card-kicker">桌面版主要备份</span>
+          <h3>🖥️ Windows 本地自动备份</h3>
+        </div>
+        <span :class="['status-badge', desktopState.lastError ? 'warning' : 'ready']">
+          {{ desktopState.isBackingUp ? '正在写入' : (desktopState.lastError ? '备份异常' : '始终开启') }}
+        </span>
+      </div>
+
+      <p class="cloud-description">
+        每次归档、修改、删除或导入后，桌面版都会更新最新备份，并按天保留历史版本。此功能完全离线，不依赖服务器或云盘登录。
+      </p>
+
+      <dl class="status-list desktop-status-list">
+        <div>
+          <dt>备份目录</dt>
+          <dd>{{ desktopState.backupDirectory || '正在初始化…' }}</dd>
+        </div>
+        <div>
+          <dt>最近备份</dt>
+          <dd>{{ formattedDesktopBackupAt }}</dd>
+        </div>
+        <div>
+          <dt>最新文件</dt>
+          <dd>{{ desktopState.lastBackupFile || desktopLatestFileName }}</dd>
+        </div>
+      </dl>
+
+      <div v-if="desktopState.lastError" class="inline-error">{{ desktopState.lastError }}</div>
+      <div class="button-row desktop-buttons">
+        <button class="btn primary" :disabled="desktopState.isBackingUp" @click="backupDesktopNow">
+          {{ desktopState.isBackingUp ? '正在备份…' : '立即写入桌面备份' }}
+        </button>
+        <button class="btn secondary" @click="openDesktopBackupLocation">打开备份位置</button>
+        <button class="btn secondary" @click="restoreDesktopLatest">恢复桌面最新备份（合并）</button>
+      </div>
+    </article>
 
     <article class="backup-card cloud-card">
       <div class="card-title-row">
@@ -160,11 +201,21 @@ import {
   retryCloudBackup,
   uploadCloudBackup
 } from '@/services/cloudBackup'
+import {
+  DESKTOP_BACKUP_LATEST_FILE_NAME,
+  desktopBackupState,
+  initializeDesktopBackup,
+  readLatestDesktopBackup,
+  revealDesktopBackup,
+  writeDesktopBackup
+} from '@/services/desktopBackup'
 
 const store = useGuaLiStore()
 const state = localBackupState
 const cloudState = cloudBackupState
+const desktopState = desktopBackupState
 const latestFileName = LOCAL_BACKUP_LATEST_FILE_NAME
+const desktopLatestFileName = DESKTOP_BACKUP_LATEST_FILE_NAME
 const message = ref('')
 const messageTone = ref<'success' | 'error'>('success')
 
@@ -176,6 +227,11 @@ const autoBackupEnabled = computed({
 const canUseDirectory = computed(() => state.hasDirectory && state.permission === 'granted')
 
 const statusLabel = computed(() => {
+  if (desktopState.enabled) {
+    if (desktopState.isBackingUp) return '桌面备份中'
+    if (desktopState.lastError) return '桌面备份异常'
+    return '桌面自动备份已开启'
+  }
   if (cloudState.enabled) {
     if (cloudState.status === 'syncing') return '云端备份中'
     if (cloudState.status === 'synced') return '云端自动备份已开启'
@@ -191,6 +247,7 @@ const statusLabel = computed(() => {
 })
 
 const statusTone = computed(() => {
+  if (desktopState.enabled) return desktopState.lastError ? 'warning' : 'ready'
   if (cloudState.enabled) {
     if (cloudState.status === 'failed' || cloudState.status === 'auth-required') return 'warning'
     if (cloudState.status === 'synced' || cloudState.status === 'syncing' || cloudState.status === 'idle') return 'ready'
@@ -236,6 +293,12 @@ const formattedCloudBackupAt = computed(() => {
   return Number.isNaN(date.getTime()) ? cloudState.lastBackupAt : date.toLocaleString('zh-CN', { hour12: false })
 })
 
+const formattedDesktopBackupAt = computed(() => {
+  if (!desktopState.lastBackupAt) return '尚未备份'
+  const date = new Date(desktopState.lastBackupAt)
+  return Number.isNaN(date.getTime()) ? desktopState.lastBackupAt : date.toLocaleString('zh-CN', { hour12: false })
+})
+
 const showMessage = (text: string, tone: 'success' | 'error' = 'success') => {
   message.value = text
   messageTone.value = tone
@@ -270,6 +333,35 @@ const backupCloudNow = async () => {
   message.value = ''
   const success = await uploadCloudBackup(store.createBackup())
   showMessage(success ? '云端备份上传成功。' : (cloudState.lastError || '云端备份没有完成。'), success ? 'success' : 'error')
+}
+
+const backupDesktopNow = async () => {
+  message.value = ''
+  const success = await writeDesktopBackup(store.createBackup())
+  showMessage(success ? '桌面备份已写入。' : (desktopState.lastError || '桌面备份没有完成。'), success ? 'success' : 'error')
+}
+
+const openDesktopBackupLocation = async () => {
+  message.value = ''
+  try {
+    if (!desktopState.lastBackupFile) await writeDesktopBackup(store.createBackup())
+    await revealDesktopBackup()
+  } catch (error) {
+    showMessage(error instanceof Error ? error.message : '无法打开桌面备份位置。', 'error')
+  }
+}
+
+const restoreDesktopLatest = async () => {
+  message.value = ''
+  if (!confirm('将桌面最新备份合并到当前卦例库；相同 ID 的记录会以备份内容更新，其他记录不会删除。继续吗？')) return
+  try {
+    const payload = await readLatestDesktopBackup()
+    const result = store.importBackup(payload)
+    if (result.imported === 0) throw new Error('桌面最新备份中没有可识别的卦例。')
+    showMessage(`桌面备份恢复完成：导入 ${result.imported} 条，跳过 ${result.skipped} 条。`)
+  } catch (error) {
+    showMessage(error instanceof Error ? error.message : '恢复桌面备份失败。', 'error')
+  }
 }
 
 const retryCloud = async () => {
@@ -311,6 +403,7 @@ const downloadJsonBackup = () => {
 
 onMounted(() => {
   void initializeLocalBackup()
+  void initializeDesktopBackup()
 })
 </script>
 
@@ -327,10 +420,14 @@ onMounted(() => {
 .backup-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 16px; }
 .backup-card { padding: 20px 22px; border: 1px solid #e2e8f0; border-radius: 10px; background: rgba(255,255,255,0.94); box-shadow: 0 4px 12px rgba(45,55,72,0.04); }
 .cloud-card { margin-top: 16px; border-color: rgba(102, 126, 234, 0.28); background: linear-gradient(135deg, rgba(255,255,255,0.98), rgba(237,242,255,0.94)); }
+.desktop-card { margin-top: 16px; border-color: rgba(56, 161, 105, 0.32); background: linear-gradient(135deg, rgba(255,255,255,0.98), rgba(240,255,244,0.94)); }
 .cloud-description { margin: 14px 0 0; color: #718096; font-size: 14px; line-height: 1.65; }
 .cloud-status-list { grid-template-columns: repeat(3, 1fr); }
 .cloud-status-list div { display: flex; flex-direction: column; gap: 5px; }
 .cloud-buttons { margin-top: 14px; }
+.desktop-status-list { grid-template-columns: 1.5fr 0.8fr 1.5fr; }
+.desktop-status-list div { display: flex; flex-direction: column; gap: 5px; }
+.desktop-buttons { margin-top: 14px; }
 .card-title-row { display: flex; justify-content: space-between; gap: 14px; align-items: flex-start; }
 .backup-card h3 { margin: 4px 0 0; color: #2d3748; font-size: 20px; }
 .folder-icon { font-size: 25px; }
@@ -362,6 +459,7 @@ onMounted(() => {
 @media (max-width: 760px) {
   .backup-grid { grid-template-columns: 1fr; }
   .cloud-status-list { grid-template-columns: 1fr; }
+  .desktop-status-list { grid-template-columns: 1fr; }
   .action-card { align-items: stretch; flex-direction: column; }
   .action-buttons { justify-content: flex-start; }
 }

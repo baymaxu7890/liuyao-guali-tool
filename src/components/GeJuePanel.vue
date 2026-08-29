@@ -30,6 +30,7 @@ import { ref, onMounted } from 'vue'
 import { useGuaLiStore } from '@/stores/guaLiStore'
 import { queueLocalBackup } from '@/services/localBackup'
 import { queueCloudBackup } from '@/services/cloudBackup'
+import { queueDesktopBackup } from '@/services/desktopBackup'
 
 interface GeJue { title: string; content: string }
 
@@ -53,6 +54,7 @@ onMounted(() => {
 const save = () => {
   localStorage.setItem('geJueList', JSON.stringify(list.value))
   queueLocalBackup(() => guaLiStore.createBackup())
+  queueDesktopBackup(() => guaLiStore.createBackup())
   queueCloudBackup(() => guaLiStore.createBackup())
 }
 const deleteItem = (index: number) => { if (confirm('确定删除?')) { list.value.splice(index, 1); save() } }

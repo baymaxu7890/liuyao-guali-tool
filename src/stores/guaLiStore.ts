@@ -5,6 +5,7 @@ import { categoryToFilterTag } from '@/utils/category'
 import { CURRENT_GUALI_SCHEMA_VERSION, GUALI_BACKUP_FORMAT, extractBackupRecords, normalizeGuaLi, type GuaLiBackup } from '@/utils/guaLiData'
 import { queueLocalBackup } from '@/services/localBackup'
 import { queueCloudBackup } from '@/services/cloudBackup'
+import { queueDesktopBackup } from '@/services/desktopBackup'
 
 export const useGuaLiStore = defineStore('guaLi', {
   state: () => ({
@@ -213,6 +214,7 @@ export const useGuaLiStore = defineStore('guaLi', {
     saveListToStorage() {
       localStorage.setItem('guaLiList', JSON.stringify(this.guaLiList))
       queueLocalBackup(() => this.createBackup())
+      queueDesktopBackup(() => this.createBackup())
       queueCloudBackup(() => this.createBackup())
     },
     

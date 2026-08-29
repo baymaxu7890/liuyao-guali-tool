@@ -88,6 +88,7 @@ import GuaLiList from './components/GuaLiList.vue'
 import ImportGuaLiModal from './components/ImportGuaLiModal.vue'
 import { initializeLocalBackup, queueLocalBackup } from './services/localBackup'
 import { queueCloudBackup } from './services/cloudBackup'
+import { initializeDesktopBackup, queueDesktopBackup } from './services/desktopBackup'
 
 const guaLiStore = useGuaLiStore()
 const router = useRouter()
@@ -174,6 +175,9 @@ onMounted(() => {
 
   void initializeLocalBackup().then(() => {
     queueLocalBackup(() => guaLiStore.createBackup(), 1200)
+  })
+  void initializeDesktopBackup().then(() => {
+    queueDesktopBackup(() => guaLiStore.createBackup(), 700)
   })
   queueCloudBackup(() => guaLiStore.createBackup(), 1500)
 })

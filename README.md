@@ -6,6 +6,7 @@ Vue 3 + TypeScript 的六爻排盘与综合术数工作台，包含：
 - 万年历、干支搜索、五虎遁与五鼠遁约束
 - 六爻歌诀及预留的梅花、八字、奇门模块
 - 浏览器本地备份、JSON 下载和服务器多云自动备份
+- Windows 桌面版与应用数据目录自动备份
 
 ## 本地开发
 
@@ -27,6 +28,29 @@ npm run build:port80
 - `npm run build` 生成部署在站点根路径的 `dist/`。
 - `npm run build:port80` 生成部署在 `/tool/` 的 `dist-port80/`。
 - 两个构建目录均为生成物，不提交到 Git。
+
+## Windows 桌面版
+
+桌面版使用 Tauri 2，与网页版共用同一套 Vue 源码。它可以完全离线运行；云端接口、云盘登录或网络异常不会影响排盘、日历、歌诀与本地归档。
+
+首次编译需要安装 Rust、Microsoft C++ Build Tools 和 WebView2。环境就绪后执行：
+
+```bash
+npm run desktop:dev
+npm run desktop:build
+```
+
+`npm run desktop:build` 会生成：
+
+- 可直接运行的程序：`src-tauri/target/release/liuyao-guali-tool.exe`
+- Windows x64 安装程序：`src-tauri/target/release/bundle/nsis/六爻综合排盘_1.0.0_x64-setup.exe`
+
+桌面版每次归档、更新、删除或导入后都会自动写入：
+
+- `%APPDATA%/com.baymaxu.liuyao/backups/六爻排盘_latest.json`
+- `%APPDATA%/com.baymaxu.liuyao/backups/历史备份/六爻排盘_YYYY-MM-DD.json`
+
+浏览器和桌面版的本地数据空间相互独立。首次使用桌面版时，可以先在网页版“导出所有”，再在桌面版“导入卦例”，完成一次性迁移。
 
 ## 云端备份
 
